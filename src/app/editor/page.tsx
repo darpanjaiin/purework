@@ -46,7 +46,7 @@ export default function EditorPage() {
       } else {
         setLoading(false);
       }
-      // Clean up the URL hash if present
+      // Clean up the URL hash after session is set
       if (window.location.hash) {
         window.history.replaceState(null, "", window.location.pathname);
       }

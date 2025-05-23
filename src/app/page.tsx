@@ -15,6 +15,9 @@ export default function Home() {
           : undefined,
       },
     });
+    if (window.location.hash) {
+      window.history.replaceState(null, "", window.location.pathname);
+    }
     setLoading(false);
   };
 
