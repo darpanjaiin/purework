@@ -1,4 +1,23 @@
+"use client";
+import { supabase } from "@/lib/supabaseClient";
+import { useState } from "react";
+
 export default function Home() {
+  const [loading, setLoading] = useState(false);
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: typeof window !== "undefined"
+          ? `${window.location.origin}/editor`
+          : undefined,
+      },
+    });
+    setLoading(false);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-white text-black font-sans">
       <main className="w-full max-w-2xl mx-auto flex flex-col items-center justify-center px-4 text-center">
@@ -11,12 +30,13 @@ export default function Home() {
         <p className="text-lg sm:text-xl text-neutral-500 mb-10 max-w-md">
           Launch your professional portfolio or business site in minutes. No code, no hassle—just beautiful, minimal design and instant results.
         </p>
-        <a
-          href="/auth"
-          className="inline-block bg-black text-white rounded-full px-8 py-4 text-lg font-semibold shadow hover:bg-neutral-800 transition-colors focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 mb-8"
+        <button
+          onClick={handleGoogleSignIn}
+          disabled={loading}
+          className="inline-block bg-black text-white rounded-full px-8 py-4 text-lg font-semibold shadow hover:bg-neutral-800 transition-colors focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 mb-8 disabled:opacity-60"
         >
-          Create Website
-        </a>
+          {loading ? "Redirecting..." : "Create Website"}
+        </button>
         <div className="w-[320px] h-[220px] border-2 border-dashed border-neutral-200 rounded-2xl flex items-center justify-center mb-8">
           <span className="text-neutral-300">[ Illustration ]</span>
         </div>

@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 
 export default function EditorPage() {
@@ -12,6 +13,8 @@ export default function EditorPage() {
     photo: "",
     subdomain: ""
   });
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -30,13 +33,33 @@ export default function EditorPage() {
   };
 
   useEffect(() => {
-    // This will parse the hash and store the session, then clean up the URL
-    supabase.auth.getSession().then(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: typeof window !== "undefined"
+              ? `${window.location.origin}/editor`
+              : undefined,
+          },
+        });
+      } else {
+        setLoading(false);
+      }
+      // Clean up the URL hash if present
       if (window.location.hash) {
         window.history.replaceState(null, "", window.location.pathname);
       }
     });
   }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white text-black font-sans">
+        <span className="text-lg">Loading editor...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-white text-black font-sans">
