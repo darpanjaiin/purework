@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
+import Image from "next/image";
 
 export default function EditorPage() {
   const [form, setForm] = useState({
@@ -14,7 +14,6 @@ export default function EditorPage() {
     subdomain: ""
   });
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -109,7 +108,15 @@ export default function EditorPage() {
       {/* Right: Live Preview */}
       <section className="flex-1 flex items-center justify-center p-8 bg-neutral-50 min-h-screen">
         <div className="w-full max-w-lg bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center text-center border border-neutral-200">
-          {form.photo && <img src={form.photo} alt="Profile" className="w-24 h-24 rounded-full object-cover mb-4 border" />}
+          {form.photo && (
+            <Image
+              src={form.photo}
+              alt="Profile"
+              width={96}
+              height={96}
+              className="w-24 h-24 rounded-full object-cover mb-4 border"
+            />
+          )}
           <h1 className="text-3xl font-bold mb-2">{form.name || "Your Name"}</h1>
           <p className="text-neutral-600 mb-4">{form.bio || "A short bio about yourself."}</p>
           <div className="w-full flex flex-col gap-2 text-left mb-4">
